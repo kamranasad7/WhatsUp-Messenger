@@ -1,4 +1,4 @@
-package com.smd.whatsup
+package com.ll.whatsup
 
 import org.junit.Test
 
