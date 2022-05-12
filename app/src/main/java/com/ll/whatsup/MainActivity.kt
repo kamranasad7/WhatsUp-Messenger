@@ -2,7 +2,6 @@ package com.ll.whatsup
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.ll.whatsup.R
 
 
 class MainActivity : AppCompatActivity() {
