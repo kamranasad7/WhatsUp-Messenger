@@ -13,7 +13,7 @@
 
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/status_header_img"
+            android:id="@+id/contact_header_img"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginStart="15dp"
@@ -23,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/statusContactName"
+            android:id="@+id/ContactName"
             android:layout_width="wrap_content"
             android:layout_height="41dp"
             android:layout_marginStart="17dp"
@@ -32,11 +32,11 @@
             android:text="Name"
             android:textColor="#333333"
             android:textSize="24dp"
-            app:layout_constraintStart_toEndOf="@+id/status_header_img"
+            app:layout_constraintStart_toEndOf="@+id/contact_header_img"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/lastMessage"
+            android:id="@+id/contactBio"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
             android:layout_marginStart="17dp"
@@ -45,8 +45,8 @@
             android:text="Hiiii....hows u?"
             android:textColor="#5E5E5E"
             android:textSize="14sp"
-            app:layout_constraintStart_toEndOf="@+id/status_header_img"
-            app:layout_constraintTop_toBottomOf="@+id/statusContactName" />
+            app:layout_constraintStart_toEndOf="@+id/contact_header_img"
+            app:layout_constraintTop_toBottomOf="@+id/ContactName" />
 
         <TextView
             android:id="@+id/chatTime"

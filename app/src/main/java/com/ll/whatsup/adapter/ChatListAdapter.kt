@@ -11,8 +11,8 @@ import com.ll.whatsup.model.Chat
 class ChatListAdapter(var chats: ArrayList<Chat>) : RecyclerView.Adapter<ChatListAdapter.ChatListViewHolder>() {
 
     class ChatListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val chatContactName = itemView.findViewById<TextView>(R.id.statusContactName)
-        val lastMessage = itemView.findViewById<TextView>(R.id.lastMessage)
+        val chatContactName = itemView.findViewById<TextView>(R.id.ContactName)
+        val lastMessage = itemView.findViewById<TextView>(R.id.contactBio)
         val chatTime = itemView.findViewById<TextView>(R.id.chatTime)
     }
 

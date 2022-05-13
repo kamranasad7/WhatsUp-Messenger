@@ -6,6 +6,7 @@ class Account {
     var phoneNumber = String()
     var bio = String()
     var profilePicture = String()
+    var allChats = ArrayList<Chat>()
     var status = ArrayList<Status>()
 
 }
