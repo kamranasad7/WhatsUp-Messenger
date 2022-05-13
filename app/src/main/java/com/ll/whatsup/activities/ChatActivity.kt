@@ -1,4 +1,4 @@
-package com.ll.whatsup
+package com.ll.whatsup.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,6 +13,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
+import com.ll.whatsup.R
 
 class ChatActivity : AppCompatActivity() {
     lateinit var testTXT: TextView

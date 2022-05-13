@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".activities.MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -30,7 +30,8 @@
 
         <com.google.android.material.tabs.TabLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            tools:ignore="MissingConstraints">
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
@@ -42,39 +43,6 @@
                 android:layout_height="wrap_content"
                 android:text="Wednesday" />
         </com.google.android.material.tabs.TabLayout>
-
-        <TabHost
-            android:layout_width="200dip"
-            android:layout_height="300dip">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <FrameLayout
-                    android:id="@android:id/tabcontent"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <LinearLayout
-                        android:id="@+id/tab2"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/tab3"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                    </LinearLayout>
-                </FrameLayout>
-            </LinearLayout>
-        </TabHost>
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
@@ -104,7 +72,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/primary_teal"
+        android:backgroundTint="@color/primary"
         android:tint="@color/white"
         app:srcCompat="@drawable/ic_search" />
 

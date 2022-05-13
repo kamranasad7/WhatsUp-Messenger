@@ -1,5 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources [
+    <!ENTITY appname "WhatsUp">
+    <!ENTITY author "MrGreen">
+    ]>
+
 <resources>
-    <string name="app_name">WhatsUp</string>
+    <string name="app_name">&appname;</string>
     <string name="chats_tab_text">Chats</string>
     <string name="status_tab_text">Stories</string>
+    <string name="welcome_text">Welcome to &appname;</string>
+    <string name="welcome_btn_text">Continue</string>
+    <string name="welcome_terms_text">No Privacy Policy. Tap \"continue\" to sign up your account</string>
+
 </resources>
