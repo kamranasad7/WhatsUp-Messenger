@@ -7,5 +7,9 @@
     <string name="welcome_text">Welcome to &appname;</string>
     <string name="welcome_btn_text">Continue</string>
     <string name="welcome_terms_text">No Privacy Policy. Tap \"continue\" to sign up your account</string>
+    <string name="signup_header_text">Enter your phone number</string>
+    <string name="signup_sub_header_text">WhatsUp will need to verify your phone number.</string>
+    <string name="signup_phone_hint">Phone Number</string>
+    <string name="next_btn_text">Next</string>
 
 </resources>

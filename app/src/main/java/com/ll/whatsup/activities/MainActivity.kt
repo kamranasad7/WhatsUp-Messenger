@@ -23,9 +23,8 @@ class MainActivity : AppCompatActivity() {
 
         tabLayout = findViewById(R.id.tablayout)
         viewpager = findViewById(R.id.viewpager)
-        viewpager?.adapter = FragmentAdapter(this,supportFragmentManager, acc.allChats)
+        viewpager?.adapter = FragmentAdapter(this,supportFragmentManager, acc.chats)
         tabLayout?.setupWithViewPager(viewpager)
-
     }
 
 }
