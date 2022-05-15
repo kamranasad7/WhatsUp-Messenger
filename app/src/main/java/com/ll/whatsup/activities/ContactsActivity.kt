@@ -1,19 +1,27 @@
 package com.ll.whatsup.activities
 
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.database.Cursor
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.telephony.PhoneNumberUtils
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import com.ll.whatsup.R
 import com.ll.whatsup.adapter.ContactsListAdapter
 import com.ll.whatsup.model.Contact
 
+class ContactsActivity() : AppCompatActivity() {
 
-class ContactsActivity : AppCompatActivity() {
+    var resultSet:Cursor? = null
+    var adp:ContactsListAdapter? = null
 
     var columns = listOf(
         ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
@@ -35,6 +43,30 @@ class ContactsActivity : AppCompatActivity() {
 
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inf: MenuInflater = menuInflater
+        inf.inflate(R.menu.contact_list_menu, menu)
+        val searchItem: MenuItem? = menu?.findItem(R.id.action_search)
+
+        lateinit var searchView:androidx.appcompat.widget.SearchView
+        if (searchItem != null) {
+            searchView= searchItem.actionView as androidx.appcompat.widget.SearchView
+        }
+        searchView.setOnQueryTextListener(object: androidx.appcompat.widget.SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                adp?.filter?.filter(newText)
+                return true
+            }
+
+        })
+
+        return true
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
@@ -45,15 +77,15 @@ class ContactsActivity : AppCompatActivity() {
 
     private fun readContact(){
 
-        val resultSet = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+        resultSet = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
         columns,null,null,ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
 
         val contactList = ArrayList<Contact>()
         if (resultSet != null) {
-            while(resultSet.moveToNext()){
+            while(resultSet!!.moveToNext()){
                 val c = Contact()
-                c.name = resultSet.getString(resultSet.getColumnIndexOrThrow(columns[0]))
-                c.number = resultSet.getString(resultSet.getColumnIndexOrThrow(columns[1]))
+                c.name = resultSet!!.getString(resultSet!!.getColumnIndexOrThrow(columns[0]))
+                c.number = resultSet!!.getString(resultSet!!.getColumnIndexOrThrow(columns[1]))
                 var duplicate = false
                 contactList.forEach{contact->
                     if(PhoneNumberUtils.compare(contact.number, c.number)){
@@ -65,15 +97,19 @@ class ContactsActivity : AppCompatActivity() {
                 }
             }
         }
-        viewContact(contactList)
+        displayContact(contactList)
     }
 
-    private fun viewContact(list:ArrayList<Contact>){
+    private fun displayContact(list:ArrayList<Contact>){
 
         val contactView = findViewById<RecyclerView>(R.id.contactRecyclerView)
         contactView.layoutManager = LinearLayoutManager(this)
 
-        val adp = ContactsListAdapter(list)
+        val adp = ContactsListAdapter(list){
+            val gson = Gson()
+            val itJSON: String = gson.toJson(it)
+            startActivity(Intent(this,ChatActivity::class.java).putExtra("ChatwithContact", itJSON))
+        }
         contactView.adapter = adp
 
     }
