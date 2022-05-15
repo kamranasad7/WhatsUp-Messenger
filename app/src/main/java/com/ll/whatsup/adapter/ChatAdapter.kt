@@ -16,7 +16,7 @@ class ChatAdapter(var chat : Chat) : RecyclerView.Adapter<ChatAdapter.ChatViewHo
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatAdapter.ChatViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.chat_card,parent,false)
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.chat_send_card,parent,false)
         return ChatViewHolder(v)
     }
 

@@ -1,6 +1,5 @@
 package com.ll.whatsup.fragments
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,7 +9,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.gson.Gson
 import com.ll.whatsup.R
+import com.ll.whatsup.activities.ChatActivity
 import com.ll.whatsup.activities.ContactsActivity
 import com.ll.whatsup.adapter.ChatListAdapter
 import com.ll.whatsup.model.Chat
@@ -21,7 +22,13 @@ class ChatListFragment(var chats:ArrayList<Chat>) : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_chat, container, false)
         val  recyclerView = view.findViewById<RecyclerView>(R.id.chatListView)
-        val adp = ChatListAdapter(chats)
+
+        val adp = ChatListAdapter(chats){
+            val gson = Gson()
+            val itJSON: String = gson.toJson(it)
+            startActivity(Intent(context, ChatActivity::class.java).putExtra("ChatwithContact", itJSON))
+        }
+
         recyclerView.layoutManager=LinearLayoutManager(context)
         recyclerView.adapter=adp
 
