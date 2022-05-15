@@ -1,7 +1,5 @@
 package com.ll.whatsup.model
 
-class Chat {
-    var messages = ArrayList<Message>()
-    var account: Account? = null
-    var chatName = String()
+data class Chat(var accountNum: String = "", var chatName: String = "", var messages: ArrayList<Message> = ArrayList()) {
+
 }
