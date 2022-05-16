@@ -11,5 +11,6 @@
     <string name="signup_sub_header_text">WhatsUp will need to verify your phone number.</string>
     <string name="signup_phone_hint">Phone Number</string>
     <string name="next_btn_text">Next</string>
+    <string name="contact_title">Contacts</string>
 
 </resources>

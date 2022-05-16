@@ -6,43 +6,59 @@
     android:layout_height="match_parent"
     tools:context=".activities.ChatActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chatView"
-        android:layout_width="325dp"
-        android:layout_height="554dp"
-        app:layout_constraintBottom_toTopOf="@+id/inputMsg"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/chat_background">
 
-    <EditText
-        android:id="@+id/inputMsg"
-        android:layout_width="228dp"
-        android:layout_height="43dp"
-        android:layout_marginTop="3dp"
-        android:ems="10"
-        android:hint="Enter Message"
-        android:inputType="textPersonName"
-        android:minHeight="48dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/sendBtn"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chatView" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chatView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            />
 
-    <Button
-        android:id="@+id/sendBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Send"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+
+            <EditText
+                android:id="@+id/inputMsg"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/rounded_rectangle_white"
+                android:ems="10"
+                android:layout_weight="1"
+                android:hint="Enter Message"
+                android:inputType="textPersonName"
+                android:minHeight="48dp"
+                android:paddingStart="15dp"
+                android:paddingEnd="10dp"/>
+
+            <Button
+                android:id="@+id/sendBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:contentDescription="Send"
+                app:icon="@drawable/ic_send" />
+        </LinearLayout>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/testTXT"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
-        app:layout_constraintBottom_toTopOf="@+id/inputMsg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
