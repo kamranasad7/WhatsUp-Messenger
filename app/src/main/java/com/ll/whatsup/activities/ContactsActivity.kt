@@ -44,9 +44,10 @@ class ContactsActivity() : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+
         val inf: MenuInflater = menuInflater
         inf.inflate(R.menu.contact_list_menu, menu)
-        val searchItem: MenuItem? = menu?.findItem(R.id.action_search)
+        val searchItem: MenuItem? = menu?.findItem(R.id.search_menu)
 
         lateinit var searchView:androidx.appcompat.widget.SearchView
         if (searchItem != null) {
@@ -61,7 +62,6 @@ class ContactsActivity() : AppCompatActivity() {
                 adp?.filter?.filter(newText)
                 return true
             }
-
         })
 
         return true

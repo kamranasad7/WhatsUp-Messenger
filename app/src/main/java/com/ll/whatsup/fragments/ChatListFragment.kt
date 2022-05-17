@@ -10,19 +10,25 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
+import com.ll.whatsup.FirebaseDB
 import com.ll.whatsup.R
 import com.ll.whatsup.activities.ChatActivity
 import com.ll.whatsup.activities.ContactsActivity
 import com.ll.whatsup.adapter.ChatListAdapter
 import com.ll.whatsup.model.Chat
 
-class ChatListFragment(var chats:ArrayList<Chat>) : Fragment() {
+class ChatListFragment() : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
+        val db = FirebaseDB()
+        val temp = db.getAccount("+923164222121")
+        if(temp!=null){
+            FirebaseDB.acc=temp
+        }
+        val chats:ArrayList<Chat> = FirebaseDB.acc.chats
         val view = inflater.inflate(R.layout.fragment_chat, container, false)
         val  recyclerView = view.findViewById<RecyclerView>(R.id.chatListView)
-
         val adp = ChatListAdapter(chats){
             val gson = Gson()
             val itJSON: String = gson.toJson(it)
