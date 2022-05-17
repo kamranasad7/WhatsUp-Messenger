@@ -21,15 +21,16 @@ class ChatListFragment() : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
+
         val db = FirebaseDB()
-        val temp = db.getAccount("+923164222121")
-        if(temp!=null){
-            FirebaseDB.acc=temp
-        }
-        val chats:ArrayList<Chat> = FirebaseDB.acc.chats
+        //val temp = db.getAccount("+923164222121")
+        //if(temp!=null){
+        //    FirebaseDB.acc=temp
+        //}
+        //val chats:ArrayList<Chat> = FirebaseDB.acc.chats
         val view = inflater.inflate(R.layout.fragment_chat, container, false)
         val  recyclerView = view.findViewById<RecyclerView>(R.id.chatListView)
-        val adp = ChatListAdapter(chats){
+        val adp = ChatListAdapter(ArrayList()){
             val gson = Gson()
             val itJSON: String = gson.toJson(it)
             startActivity(Intent(context, ChatActivity::class.java).putExtra("ChatwithContact", itJSON))
