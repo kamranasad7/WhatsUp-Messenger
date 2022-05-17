@@ -11,6 +11,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WhatsUp">
+        <service
+            android:name=".BackgroundService"
+            android:enabled="true"
+            android:exported="true"></service>
+
         <activity
             android:name=".activities.CreateProfileActivity"
             android:exported="false"
@@ -19,8 +24,8 @@
             android:name=".activities.SignUpActivity"
             android:exported="false"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Theme.WhatsUp.NoActionBar" />
+            android:theme="@style/Theme.WhatsUp.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activities.WelcomeActivity"
             android:exported="false"
@@ -35,8 +40,8 @@
             android:exported="false" />
         <activity
             android:name=".activities.MainActivity"
-            android:launchMode="singleTask"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -11,6 +11,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
+import com.ll.whatsup.BackgroundService
 import com.ll.whatsup.R
 import com.ll.whatsup.adapter.ChatListAdapter
 import com.ll.whatsup.adapter.FragmentAdapter
@@ -24,6 +25,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
+        //For background service
+        val i = Intent(this, BackgroundService::class.java)
+        startService(i)
 
         val db = Firebase.database("https://whatsup-messenger-f8f2c-default-rtdb.asia-southeast1.firebasedatabase.app/")
         val accounts = db.getReference("accounts")
