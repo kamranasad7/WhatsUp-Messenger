@@ -17,6 +17,8 @@
         android:background="@drawable/chat_background">
 
         <androidx.recyclerview.widget.RecyclerView
+            android:paddingTop="15dp"
+            android:paddingBottom="10dp"
             android:id="@+id/chatView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -54,12 +56,4 @@
         </LinearLayout>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/testTXT"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

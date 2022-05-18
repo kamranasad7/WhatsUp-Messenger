@@ -16,6 +16,7 @@
         android:background="@color/primary"
         android:elevation="12dp"
         app:tabIndicator="@color/light_grey"
+        app:tabIndicatorColor="@color/primary"
         app:tabSelectedTextColor="@color/white"
         app:tabTextColor="@color/light_grey" />
 
