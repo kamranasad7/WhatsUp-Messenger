@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ll.whatsup.FirebaseDB
 import com.ll.whatsup.R
 import com.ll.whatsup.model.Chat
+import com.ll.whatsup.model.Message
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -15,6 +16,11 @@ class ChatAdapter(var chat : Chat) : RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private val SENDER = 0
     private val RECEIVER = 1
+    val msgList = ArrayList<Message>()
+
+    init {
+        msgList.addAll(chat.messages.values)
+    }
 
     class SenderMessageViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         var msg: TextView = itemView.findViewById(R.id.text_message_body)
@@ -27,7 +33,7 @@ class ChatAdapter(var chat : Chat) : RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if(chat.messages[position].senderNum == FirebaseDB.currentAccount.number)  SENDER else RECEIVER
+        return if(msgList[position].senderNum == FirebaseDB.currentAccount.number)  SENDER else RECEIVER
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -53,14 +59,14 @@ class ChatAdapter(var chat : Chat) : RecyclerView.Adapter<RecyclerView.ViewHolde
         when(holder.itemViewType){
             SENDER -> {
                 val senderHolder = holder as SenderMessageViewHolder
-                val message = chat.messages[position]
+                val message = msgList[position]
                 holder.msg.text = message.text
                 val dateFormat = SimpleDateFormat("hh.mm aa", Locale.US)
                 holder.msgTime.text = dateFormat.format(message.time).toString()
             }
             RECEIVER -> {
                 val receiverHolder = holder as ReceiverMessageViewHolder
-                val message = chat.messages[position]
+                val message = msgList[position]
                 holder.msg.text = message.text
                 val dateFormat = SimpleDateFormat("hh.mm aa", Locale.US)
                 holder.msgTime.text = dateFormat.format(message.time).toString()

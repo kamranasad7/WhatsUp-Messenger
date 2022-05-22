@@ -23,7 +23,7 @@ object FirebaseDB {
     lateinit var chatsRef: DatabaseReference
 
     fun initialize() {
-        chatsRef = db.getReference("accounts/${Firebase.auth.currentUser?.phoneNumber}")
+        chatsRef = db.getReference("accounts/${Firebase.auth.currentUser?.phoneNumber}/chats")
     }
 
     fun getAccount(accountNo: String, onSuccessListener: OnSuccessListener<DataSnapshot>) {
@@ -33,6 +33,14 @@ object FirebaseDB {
 
     fun getAccountReference(accountNo: String): DatabaseReference {
         return db.getReference("accounts/${accountNo}")
+    }
+
+    fun getChatReference(accountNo: String): DatabaseReference {
+        return chatsRef.child(accountNo)
+    }
+
+    fun getReceiverChatReference(receiverNo: String, accountNo: String): DatabaseReference {
+        return db.getReference("accounts/${receiverNo}/chats/${accountNo}")
     }
 
 

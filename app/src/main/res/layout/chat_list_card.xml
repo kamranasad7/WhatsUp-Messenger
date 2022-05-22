@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:gravity="center|start|top"
-            android:text="Hiiii....hows u?"
+
             android:textColor="#5E5E5E"
             android:textSize="14sp"
             app:layout_constraintStart_toEndOf="@+id/contact_header_img"

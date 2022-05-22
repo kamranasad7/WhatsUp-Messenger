@@ -9,6 +9,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ktx.getValue
 import com.google.gson.Gson
 import com.ll.whatsup.FirebaseDB
 import com.ll.whatsup.R
@@ -18,26 +22,28 @@ import com.ll.whatsup.adapter.ChatListAdapter
 import com.ll.whatsup.model.Chat
 
 class ChatListFragment() : Fragment() {
-
+    lateinit var adapter: ChatListAdapter
+    lateinit var recyclerView: RecyclerView
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-
-        val db = FirebaseDB()
-        //val temp = db.getAccount("+923164222121")
-        //if(temp!=null){
-        //    FirebaseDB.acc=temp
-        //}
-        //val chats:ArrayList<Chat> = FirebaseDB.acc.chats
         val view = inflater.inflate(R.layout.fragment_chat, container, false)
-        val  recyclerView = view.findViewById<RecyclerView>(R.id.chatListView)
-        val adp = ChatListAdapter(ArrayList()){
+        recyclerView = view.findViewById(R.id.chatListView)
+
+        adapter = ChatListAdapter(HashMap()){
             val gson = Gson()
-            val itJSON: String = gson.toJson(it)
-            startActivity(Intent(context, ChatActivity::class.java).putExtra("ChatwithContact", itJSON))
+            val contactJSON: String = gson.toJson(FirebaseDB.contactsHash[it.accountNum])
+
+            val i = Intent(context, ChatActivity::class.java)
+            i.putExtra("contact", contactJSON)
+            i.putExtra("phone", it.accountNum)
+
+            startActivity(i)
         }
 
+
         recyclerView.layoutManager=LinearLayoutManager(context)
-        recyclerView.adapter=adp
+        recyclerView.adapter=adapter
+        recyclerView.setHasFixedSize(true)
 
         val fabBtn = view.findViewById<FloatingActionButton>(R.id.contactList_fab)
         fabBtn.setOnClickListener{
@@ -46,6 +52,46 @@ class ChatListFragment() : Fragment() {
         }
 
         return view
+    }
+
+    fun loadChats(){
+        adapter.setChatsList(FirebaseDB.currentAccount.chats)
+        adapter.notifyItemRangeInserted(0, adapter.chats.size)
+
+        FirebaseDB.chatsRef.addChildEventListener(object: ChildEventListener {
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                try {
+                    val result = snapshot.getValue<HashMap<String, Chat>>()
+                    val chat = ArrayList<Chat>()
+                    if (result != null) {
+                        chat.addAll(result.values)
+                    }
+
+                    adapter.chats[chat[0].accountNum] = chat[0]
+                    adapter.notifyChange(chat[0].accountNum)
+                }
+                catch (e: Exception) { }
+            }
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                try {
+                    val result = snapshot.getValue<Chat>()
+
+                    if(adapter.chats[snapshot.key] == null){
+                        adapter.chats[snapshot.key!!] = result!!
+                        adapter.chatsList.add(0, result)
+                        adapter.notifyItemInserted(0)
+                        recyclerView.scrollToPosition(0)
+                    }
+                }
+
+                catch (e: Exception) { }
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) { }
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) { }
+            override fun onCancelled(error: DatabaseError) { }
+
+        })
     }
 
 }

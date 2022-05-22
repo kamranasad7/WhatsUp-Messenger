@@ -19,35 +19,53 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.database
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
+import com.ll.whatsup.FirebaseDB
 import com.ll.whatsup.R
 import com.ll.whatsup.adapter.ChatAdapter
 import com.ll.whatsup.model.Chat
 import com.ll.whatsup.model.Contact
+import com.ll.whatsup.model.Message
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
-class ChatActivity() : AppCompatActivity() {
+class ChatActivity : AppCompatActivity() {
+
+    lateinit var chatRef: DatabaseReference
+    lateinit var msgsRef: DatabaseReference
+    lateinit var recvChatRef: DatabaseReference
+    lateinit var view: RecyclerView
 
     var chat: Chat? = null
     var contact: Contact? = null
+    var chatStarted = false
+
     lateinit var msgText: EditText
-    lateinit var dialog: Dialog
+    lateinit var adp: ChatAdapter
+    private lateinit var msgsLoadDialog: Dialog
+    private lateinit var dialog: Dialog
+    private lateinit var dialog2: Dialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
 
+
+        //GET VALUES FROM INTENT
         val gson = Gson()
-        chat = gson.fromJson(intent.getStringExtra("chat"), Chat::class.java)
+        val number = intent.getStringExtra("phone")
+        chatRef = FirebaseDB.getChatReference(number!!)
+        msgsRef = chatRef.child("messages")
+        recvChatRef = FirebaseDB.getReceiverChatReference(number, FirebaseDB.currentAccount.number)
+        chat = FirebaseDB.currentAccount.chats[number]
         contact = gson.fromJson(intent.getStringExtra("contact"), Contact::class.java)
 
 
+        // SET TITLE
         if(contact != null){
             title = contact?.name
         }
@@ -56,14 +74,117 @@ class ChatActivity() : AppCompatActivity() {
         }
 
 
+        //GET MSGS IN ORDER
+        msgsRef.orderByKey().get().addOnSuccessListener {
+            try {
+                val msgsList = it.getValue<HashMap<String, Message>>()
+                val x = msgsList
+            }
+            catch (e: Exception) { }
+        }
+
+        msgsLoadDialog = Dialog(this)
+        msgsLoadDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        msgsLoadDialog.setContentView(R.layout.dialog_loading)
+        msgsLoadDialog.findViewById<TextView>(R.id.loading_dialog_text).text = "Loading messages..."
+        msgsLoadDialog.setCancelable(false)
+        msgsLoadDialog.show()
+
+
         msgText = findViewById(R.id.inputMsg)
         findViewById<Button>(R.id.sendBtn).setOnClickListener { sendMessage() }
 
         displayChat()
+
+
+        //CHECK IF CHAT OBJECT EXISTS IN DB ON RECEIVER SIDE
+        dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_loading)
+        dialog.findViewById<TextView>(R.id.loading_dialog_text).text = "Loading..."
+        dialog.setCancelable(false)
+        dialog.show()
+        recvChatRef.get().addOnSuccessListener {
+            try{
+                val recvChat = it.getValue<Chat>()
+                if(recvChat != null){
+                    chatStarted = true
+                }
+                dialog.dismiss()
+            }
+            catch(e: Exception) { }
+        }
+
+
+        msgsRef.limitToLast(1).addChildEventListener(object: ChildEventListener {
+            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                try{
+                    val result = snapshot.getValue<Message>()
+
+                    if(chat?.messages?.get(snapshot.key) == null){
+                        chat?.messages?.put(snapshot.key!!, result!!)
+                        adp.msgList.add(result!!)
+                        adp.notifyItemInserted(adp.msgList.size - 1)
+                        view.scrollToPosition(adp.msgList.size - 1)
+                    }
+                }
+                catch (e: Exception) { }
+            }
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) { }
+            override fun onChildRemoved(snapshot: DataSnapshot) { }
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) { }
+            override fun onCancelled(error: DatabaseError) { }
+
+        })
     }
 
     private fun sendMessage() {
+        val message = Message(msgText.text.toString(), Calendar.getInstance().time, FirebaseDB.currentAccount.number, adp.chat.accountNum)
 
+        if(!chatStarted) {
+            dialog2 = Dialog(this)
+            dialog2.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog2.setContentView(R.layout.dialog_loading)
+            dialog2.findViewById<TextView>(R.id.loading_dialog_text).text = "Starting chat"
+            dialog2.setCancelable(false)
+            dialog2.show()
+
+            recvChatRef.setValue(Chat(FirebaseDB.currentAccount.number)).addOnSuccessListener {
+                dialog2.dismiss()
+                send(message)
+            }
+        }
+
+        else send(message)
+    }
+
+
+    private fun send(message: Message) {
+        if(chat == null){
+            chat = adp.chat
+            chatRef.setValue(adp.chat).addOnSuccessListener {
+                val msgRef = msgsRef.push()
+                msgRef.setValue(message)
+                val recvMsg = recvChatRef.child("messages").push()
+                recvMsg.setValue(message)
+                dialog.dismiss()
+            }
+
+            dialog = Dialog(this)
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setContentView(R.layout.dialog_loading)
+            dialog.findViewById<TextView>(R.id.loading_dialog_text).text = "Starting chat"
+            dialog.setCancelable(false)
+            dialog.show()
+        }
+        else{
+            val msgRef = msgsRef.push()
+            msgRef.setValue(message)
+            val recvMsg = recvChatRef.child("messages").push()
+            recvMsg.setValue(message)
+        }
+
+        msgText.text.clear()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -128,7 +249,6 @@ class ChatActivity() : AppCompatActivity() {
     }
 
     private fun displayChat() {
-        lateinit var adp: ChatAdapter
 
         if(chat != null){
             adp = ChatAdapter(chat!!)
@@ -138,11 +258,11 @@ class ChatActivity() : AppCompatActivity() {
         }
         else {
             adp = ChatAdapter(Chat())
-            Toast.makeText(this, "Chat ot contact not found", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Chat or contact not found", Toast.LENGTH_SHORT).show()
             finish()
         }
 
-        val view = findViewById<RecyclerView>(R.id.chatView)
+        view = findViewById(R.id.chatView)
         view.layoutManager = LinearLayoutManager(this)
         view.adapter = adp
     }

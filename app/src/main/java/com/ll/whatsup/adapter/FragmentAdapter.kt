@@ -9,6 +9,10 @@ import com.ll.whatsup.fragments.StatusFragment
 import com.ll.whatsup.model.Chat
 
 class FragmentAdapter(var context: Context, fm:FragmentManager): FragmentStatePagerAdapter(fm) {
+
+    val chatList = ChatListFragment()
+    val statusList = StatusFragment()
+
     override fun getCount(): Int {
         return 2
     }
@@ -16,10 +20,10 @@ class FragmentAdapter(var context: Context, fm:FragmentManager): FragmentStatePa
     override fun getItem(position: Int): Fragment {
         return when(position){
             0->{
-                ChatListFragment()
+                chatList
             }
             1->{
-                StatusFragment()
+                statusList
             }
             else -> {getItem(position)}
         }
