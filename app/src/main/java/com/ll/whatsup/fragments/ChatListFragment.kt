@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -21,15 +22,16 @@ import com.ll.whatsup.activities.ContactsActivity
 import com.ll.whatsup.adapter.ChatListAdapter
 import com.ll.whatsup.model.Chat
 
-class ChatListFragment() : Fragment() {
+class ChatListFragment : Fragment() {
     lateinit var adapter: ChatListAdapter
     lateinit var recyclerView: RecyclerView
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         val view = inflater.inflate(R.layout.fragment_chat, container, false)
         recyclerView = view.findViewById(R.id.chatListView)
 
-        adapter = ChatListAdapter(HashMap()){
+        adapter = ChatListAdapter(HashMap()) {
             val gson = Gson()
             val contactJSON: String = gson.toJson(FirebaseDB.contactsHash[it.accountNum])
 
@@ -41,15 +43,12 @@ class ChatListFragment() : Fragment() {
         }
 
 
-        recyclerView.layoutManager=LinearLayoutManager(context)
-        recyclerView.adapter=adapter
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = adapter
         recyclerView.setHasFixedSize(true)
 
         val fabBtn = view.findViewById<FloatingActionButton>(R.id.contactList_fab)
-        fabBtn.setOnClickListener{
-            val i = Intent(context, ContactsActivity::class.java)
-            startActivity(i)
-        }
+        fabBtn.setOnClickListener{  startActivity(Intent(context, ContactsActivity::class.java)) }
 
         return view
     }
@@ -61,16 +60,22 @@ class ChatListFragment() : Fragment() {
         FirebaseDB.chatsRef.addChildEventListener(object: ChildEventListener {
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
                 try {
-                    val result = snapshot.getValue<HashMap<String, Chat>>()
-                    val chat = ArrayList<Chat>()
-                    if (result != null) {
-                        chat.addAll(result.values)
-                    }
+                    val result = snapshot.getValue<Chat>()
+                    //val chat = ArrayList<Chat>()
+                    //if (result != null) {
+                    //    chat.addAll(result.values)
+                    //}
 
-                    adapter.chats[chat[0].accountNum] = chat[0]
-                    adapter.notifyChange(chat[0].accountNum)
+                    val index = adapter.chatsList.indexOf(adapter.chats[result?.accountNum])
+                    adapter.chatsList.removeAt(index)
+                    adapter.chatsList.add(0, adapter.chats[result?.accountNum]!!)
+                    //adapter.chats[chat[0].accountNum] = chat[0]
+                    //adapter.notifyChange(chat[0].accountNum)
+                    adapter.notifyItemRangeChanged(0, index + 1)
                 }
-                catch (e: Exception) { }
+                catch (e: Exception) {
+                    Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+                }
             }
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 try {
@@ -84,7 +89,9 @@ class ChatListFragment() : Fragment() {
                     }
                 }
 
-                catch (e: Exception) { }
+                catch (e: Exception) {
+                    Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+                }
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) { }

@@ -17,5 +17,8 @@
     <string name="create_profile_text">Create your WhatsUp Profile</string>
     <string name="create_profile_name_hint">Account Name</string>
     <string name="create_profile_bio_hint">Account Bio</string>
+    <string name="banner_ad_id">ca-app-pub-9583894405161645/3426652616</string>
+    <string name="banner_ad_id_test">ca-app-pub-3940256099942544/6300978111</string>
+
 
 </resources>

@@ -14,7 +14,11 @@
         <service
             android:name=".BackgroundService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-9583894405161645~8678979297"/>
 
         <activity
             android:name=".activities.CreateProfileActivity"
@@ -37,7 +41,8 @@
             android:label="@string/contact_title" />
         <activity
             android:name=".activities.ChatActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleTask" />
         <activity
             android:name=".activities.MainActivity"
             android:exported="true"

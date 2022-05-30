@@ -64,6 +64,9 @@ class ChatActivity : AppCompatActivity() {
         chat = FirebaseDB.currentAccount.chats[number]
         contact = gson.fromJson(intent.getStringExtra("contact"), Contact::class.java)
 
+        //CLEAR MESSAGES
+        chat?.messages?.clear()
+
 
         // SET TITLE
         if(contact != null){
@@ -72,23 +75,6 @@ class ChatActivity : AppCompatActivity() {
         else if(chat != null){
             title = chat?.accountNum
         }
-
-
-        //GET MSGS IN ORDER
-        msgsRef.orderByKey().get().addOnSuccessListener {
-            try {
-                val msgsList = it.getValue<HashMap<String, Message>>()
-                val x = msgsList
-            }
-            catch (e: Exception) { }
-        }
-
-        msgsLoadDialog = Dialog(this)
-        msgsLoadDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        msgsLoadDialog.setContentView(R.layout.dialog_loading)
-        msgsLoadDialog.findViewById<TextView>(R.id.loading_dialog_text).text = "Loading messages..."
-        msgsLoadDialog.setCancelable(false)
-        msgsLoadDialog.show()
 
 
         msgText = findViewById(R.id.inputMsg)
@@ -112,11 +98,13 @@ class ChatActivity : AppCompatActivity() {
                 }
                 dialog.dismiss()
             }
-            catch(e: Exception) { }
+            catch(e: Exception) {
+                Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
+            }
         }
 
 
-        msgsRef.limitToLast(1).addChildEventListener(object: ChildEventListener {
+        msgsRef.orderByKey().addChildEventListener(object: ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 try{
                     val result = snapshot.getValue<Message>()
@@ -128,7 +116,9 @@ class ChatActivity : AppCompatActivity() {
                         view.scrollToPosition(adp.msgList.size - 1)
                     }
                 }
-                catch (e: Exception) { }
+                catch (e: Exception) {
+                    Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
+                }
             }
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) { }
             override fun onChildRemoved(snapshot: DataSnapshot) { }
@@ -139,6 +129,9 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun sendMessage() {
+
+        if(msgText.text.isNullOrBlank()) { return }
+
         val message = Message(msgText.text.toString(), Calendar.getInstance().time, FirebaseDB.currentAccount.number, adp.chat.accountNum)
 
         if(!chatStarted) {
@@ -265,5 +258,11 @@ class ChatActivity : AppCompatActivity() {
         view = findViewById(R.id.chatView)
         view.layoutManager = LinearLayoutManager(this)
         view.adapter = adp
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        //msgsRef.removeEventListener()
     }
 }

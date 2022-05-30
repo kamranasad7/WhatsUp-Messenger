@@ -59,6 +59,7 @@ class ChatListAdapter(var chats: HashMap<String, Chat>, val listener:(Chat)->Uni
 
     fun setChatsList(chats: HashMap<String, Chat>){
         this.chats = chats
+
         chatsList.clear()
         chatsList.addAll(chats.values)
     }

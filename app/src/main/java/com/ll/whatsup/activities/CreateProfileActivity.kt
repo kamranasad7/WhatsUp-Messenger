@@ -11,6 +11,8 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.ll.whatsup.R
 import com.ll.whatsup.model.Account
+import java.util.*
+import kotlin.collections.HashMap
 
 class CreateProfileActivity : AppCompatActivity() {
     lateinit var confirmBtn: Button
@@ -36,8 +38,15 @@ class CreateProfileActivity : AppCompatActivity() {
 
             val db = Firebase.database("https://whatsup-messenger-f8f2c-default-rtdb.asia-southeast1.firebasedatabase.app/")
             val accounts = db.getReference("accounts")
-            val newAccountRef = accounts.child(newAccount.number)
-            newAccountRef.setValue(newAccount)
+            //val newAccountRef = accounts.child(newAccount.number)
+            //newAccountRef.setValue(newAccount)
+
+            val map = HashMap<String, Any>()
+            map["${newAccount.number}/number"] = newAccount.number
+            map["${newAccount.number}/profileName"] = newAccount.profileName
+            map["${newAccount.number}/profilePicture"] = newAccount.profilePicture
+            map["${newAccount.number}/bio"] = newAccount.bio
+            accounts.updateChildren(map)
 
             startActivity(Intent(applicationContext, MainActivity::class.java))
             finish()
