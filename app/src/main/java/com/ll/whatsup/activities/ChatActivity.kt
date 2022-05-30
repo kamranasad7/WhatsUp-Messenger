@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.getValue
-import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import com.ll.whatsup.FirebaseDB
 import com.ll.whatsup.R
@@ -30,8 +29,6 @@ import com.ll.whatsup.model.Chat
 import com.ll.whatsup.model.Contact
 import com.ll.whatsup.model.Message
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class ChatActivity : AppCompatActivity() {
 
@@ -46,9 +43,10 @@ class ChatActivity : AppCompatActivity() {
 
     lateinit var msgText: EditText
     lateinit var adp: ChatAdapter
-    private lateinit var msgsLoadDialog: Dialog
     private lateinit var dialog: Dialog
     private lateinit var dialog2: Dialog
+
+    private lateinit var childListener: ChildEventListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,7 +102,7 @@ class ChatActivity : AppCompatActivity() {
         }
 
 
-        msgsRef.orderByKey().addChildEventListener(object: ChildEventListener {
+        childListener = object: ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 try{
                     val result = snapshot.getValue<Message>()
@@ -124,8 +122,9 @@ class ChatActivity : AppCompatActivity() {
             override fun onChildRemoved(snapshot: DataSnapshot) { }
             override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) { }
             override fun onCancelled(error: DatabaseError) { }
+        }
 
-        })
+        msgsRef.orderByKey().addChildEventListener(childListener)
     }
 
     private fun sendMessage() {
@@ -263,6 +262,6 @@ class ChatActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
-        //msgsRef.removeEventListener()
+        msgsRef.removeEventListener(childListener)
     }
 }

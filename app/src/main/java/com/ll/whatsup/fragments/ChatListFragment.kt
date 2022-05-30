@@ -26,10 +26,8 @@ class ChatListFragment : Fragment() {
     lateinit var adapter: ChatListAdapter
     lateinit var recyclerView: RecyclerView
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
-        val view = inflater.inflate(R.layout.fragment_chat, container, false)
-        recyclerView = view.findViewById(R.id.chatListView)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
         adapter = ChatListAdapter(HashMap()) {
             val gson = Gson()
@@ -41,6 +39,12 @@ class ChatListFragment : Fragment() {
 
             startActivity(i)
         }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+        val view = inflater.inflate(R.layout.fragment_chat, container, false)
+        recyclerView = view.findViewById(R.id.chatListView)
 
 
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -54,6 +58,20 @@ class ChatListFragment : Fragment() {
     }
 
     fun loadChats(){
+
+        if (!this::adapter.isInitialized){
+            adapter = ChatListAdapter(HashMap()) {
+                val gson = Gson()
+                val contactJSON: String = gson.toJson(FirebaseDB.contactsHash[it.accountNum])
+
+                val i = Intent(context, ChatActivity::class.java)
+                i.putExtra("contact", contactJSON)
+                i.putExtra("phone", it.accountNum)
+
+                startActivity(i)
+            }
+        }
+
         adapter.setChatsList(FirebaseDB.currentAccount.chats)
         adapter.notifyItemRangeInserted(0, adapter.chats.size)
 
