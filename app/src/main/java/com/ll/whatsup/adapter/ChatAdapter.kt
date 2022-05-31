@@ -60,16 +60,16 @@ class ChatAdapter(var chat : Chat) : RecyclerView.Adapter<RecyclerView.ViewHolde
             SENDER -> {
                 val senderHolder = holder as SenderMessageViewHolder
                 val message = msgList[position]
-                holder.msg.text = message.text
+                senderHolder.msg.text = message.text
                 val dateFormat = SimpleDateFormat("hh.mm aa", Locale.US)
-                holder.msgTime.text = dateFormat.format(message.time).toString()
+                senderHolder.msgTime.text = dateFormat.format(message.time).toString()
             }
             RECEIVER -> {
                 val receiverHolder = holder as ReceiverMessageViewHolder
                 val message = msgList[position]
-                holder.msg.text = message.text
+                receiverHolder.msg.text = message.text
                 val dateFormat = SimpleDateFormat("hh.mm aa", Locale.US)
-                holder.msgTime.text = dateFormat.format(message.time).toString()
+                receiverHolder.msgTime.text = dateFormat.format(message.time).toString()
             }
         }
     }

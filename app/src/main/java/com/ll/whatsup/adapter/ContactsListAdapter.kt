@@ -1,6 +1,5 @@
 package com.ll.whatsup.adapter
 
-import android.provider.ContactsContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,9 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ll.whatsup.R
 import com.ll.whatsup.model.Contact
 
-class ContactsListAdapter(var contactList: ArrayList<Contact>, val listener:(Contact)->Unit): RecyclerView.Adapter<ContactsListAdapter.ContactViewHolder>(), Filterable {
+class ContactsListAdapter(var allContacts: ArrayList<Contact>, val listener:(Contact)->Unit): RecyclerView.Adapter<ContactsListAdapter.ContactViewHolder>(), Filterable {
 
-    var list:ArrayList<Contact> = contactList
+    var contacts: ArrayList<Contact> = ArrayList()
+
+    init {
+        contacts.addAll(allContacts)
+    }
 
     class ContactViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
          var contactName = itemView.findViewById<TextView>(R.id.ContactName)
@@ -26,35 +29,41 @@ class ContactsListAdapter(var contactList: ArrayList<Contact>, val listener:(Con
     }
 
     override fun onBindViewHolder(holder: ContactViewHolder, position: Int) {
-        val contact = list[position]
+        val contact = contacts[position]
         holder.contactName.text = contact.name
         holder.contactBio.text=contact.number
         holder.itemView.setOnClickListener { listener(contact) }
     }
 
     override fun getItemCount(): Int {
-        return contactList.size
+        return contacts.size
     }
 
     override fun getFilter(): Filter {
 
-        return object:Filter(){
-            override fun performFiltering(p0: CharSequence?): FilterResults {
-                val  results:FilterResults = FilterResults()
+        return object: Filter(){
+            override fun performFiltering(text: CharSequence?): FilterResults {
+                val  results = FilterResults()
                 val tempList = ArrayList<Contact>()
 
-                list.forEach {
-                    if(p0?.let { it1 -> it.name.contains(it1) } == true){
-                        tempList.add(it)
+                if(text.isNullOrBlank()){
+                    tempList.addAll(allContacts)
+                }
+                else{
+                    allContacts.forEach {
+                        if(it.name.lowercase().contains(text.toString().lowercase().trim())){
+                            tempList.add(it)
+                        }
                     }
                 }
-                results.values=tempList
+
+                results.values = tempList
                 return results
             }
 
-            override fun publishResults(p0: CharSequence?, p1: FilterResults?) {
-                list.clear()
-                list.addAll(p1?.values as ArrayList<Contact>)
+            override fun publishResults(text: CharSequence?, result: FilterResults?) {
+                contacts.clear()
+                contacts.addAll(result?.values as ArrayList<Contact>)
                 notifyDataSetChanged()
             }
         }

@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,9 +18,9 @@ import com.ll.whatsup.R
 import com.ll.whatsup.adapter.ContactsListAdapter
 import com.ll.whatsup.model.Contact
 
-class ContactsActivity() : AppCompatActivity() {
+class ContactsActivity : AppCompatActivity() {
     
-    var adp:ContactsListAdapter? = null
+    var adp: ContactsListAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -39,11 +40,11 @@ class ContactsActivity() : AppCompatActivity() {
         inf.inflate(R.menu.contact_list_menu, menu)
         val searchItem: MenuItem? = menu?.findItem(R.id.search_menu)
 
-        lateinit var searchView:androidx.appcompat.widget.SearchView
+        lateinit var searchView: SearchView
         if (searchItem != null) {
-            searchView= searchItem.actionView as androidx.appcompat.widget.SearchView
+            searchView = searchItem.actionView as SearchView
         }
-        searchView.setOnQueryTextListener(object: androidx.appcompat.widget.SearchView.OnQueryTextListener{
+        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
@@ -63,7 +64,7 @@ class ContactsActivity() : AppCompatActivity() {
         val contactView = findViewById<RecyclerView>(R.id.contactRecyclerView)
         contactView.layoutManager = LinearLayoutManager(this)
 
-        val adp = ContactsListAdapter(list){
+        adp = ContactsListAdapter(list){
             val gson = Gson()
             val contactJSON: String = gson.toJson(it)
 
